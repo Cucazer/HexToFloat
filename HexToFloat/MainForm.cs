@@ -33,9 +33,9 @@ namespace HexToFloat
                     if (floatToHex.Checked)
                     {
                         var bytes = BitConverter.GetBytes(Convert.ToSingle(sourceBox.Text.Replace(" ", "").Replace(".", ",").Replace("-", " ")));
-                        if (BitConverter.IsLittleEndian)
+                        if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
                             Array.Reverse(bytes);
-                        resultBox.Text = BitConverter.ToString(bytes);
+                        resultBox.Text = BitConverter.ToString(bytes).Replace("-"," ");
                     }
             }
             catch (Exception ex)
@@ -49,11 +49,12 @@ namespace HexToFloat
             Count();
         }
 
-        public static float ByteArrayToFloat(byte[] source)
+        public float ByteArrayToFloat(byte[] source)
         {
-            if (BitConverter.IsLittleEndian)
+            if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
                 Array.Reverse(source);
-            return BitConverter.ToSingle(source, 0);
+            
+            return BitConverter.ToInt32(source, 0);
         }
 
         public static byte[] StringToByteArrayFastest(string hex)
