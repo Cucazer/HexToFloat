@@ -32,7 +32,10 @@ namespace HexToFloat
                 else
                     if (floatToHex.Checked)
                     {
-                        resultBox.Text = BitConverter.ToString(BitConverter.GetBytes(Convert.ToSingle(sourceBox.Text.Replace(" ", "").Replace(".", ",")))).Replace("-", " ");
+                        var bytes = BitConverter.GetBytes(Convert.ToSingle(sourceBox.Text.Replace(" ", "").Replace(".", ",").Replace("-", " ")));
+                        if (BitConverter.IsLittleEndian)
+                            Array.Reverse(bytes);
+                        resultBox.Text = BitConverter.ToString(bytes);
                     }
             }
             catch (Exception ex)
@@ -46,11 +49,13 @@ namespace HexToFloat
             Count();
         }
 
-     public static float ByteArrayToFloat(byte[] source)
-            {
-                return BitConverter.ToSingle(source, 0);
-            }
-     
+        public static float ByteArrayToFloat(byte[] source)
+        {
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(source);
+            return BitConverter.ToSingle(source, 0);
+        }
+
         public static byte[] StringToByteArrayFastest(string hex)
         {
             if (hex.Length % 2 == 1)
@@ -79,7 +84,7 @@ namespace HexToFloat
 
         private void sourceBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode==Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 Count();
             }
