@@ -54,7 +54,7 @@ namespace HexToFloat
             if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
                 Array.Reverse(source);
             
-            return BitConverter.ToInt32(source, 0);
+            return BitConverter.ToSingle(source, 0);
         }
 
         public static byte[] StringToByteArrayFastest(string hex)
