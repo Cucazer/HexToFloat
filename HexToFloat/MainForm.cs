@@ -82,14 +82,5 @@ namespace HexToFloat
             //Or the two combined, but a bit slower:
             //return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
         }
-
-        private void sourceBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                Count();
-            }
-        }
-
     }
 }
