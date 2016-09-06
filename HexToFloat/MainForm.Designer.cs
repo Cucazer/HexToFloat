@@ -97,7 +97,7 @@
             this.groupBox1.Size = new System.Drawing.Size(99, 67);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Convertion type";
+            this.groupBox1.Text = "Conversion type";
             // 
             // groupBox2
             // 
