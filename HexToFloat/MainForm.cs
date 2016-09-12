@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace HexToFloat
 {
@@ -22,20 +23,38 @@ namespace HexToFloat
 
         }
 
-        void Count()
+		void Count()
         {
             try
             {
                 resultBox.Text = "";
                 if (hexToFloat.Checked)
-                    resultBox.Text = ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-                else
+				{
+					if (singlePrecision.Checked) 
+					{
+						resultBox.Text = ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
+					}
+					else 
+					{
+						resultBox.Text = ByteArrayToDouble(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
+					}
+				}
+				else
                     if (floatToHex.Checked)
                     {
-                        var bytes = BitConverter.GetBytes(Convert.ToSingle(sourceBox.Text.Replace(" ", "").Replace(".", ",").Replace("-", " ")));
+						var textToConvert = sourceBox.Text.Replace(",",".");//.Replace(" ", "").Replace(".", ",").Replace("-", " ");
+						byte[] valueBytes;
+						if (singlePrecision.Checked) 
+						{
+							valueBytes = BitConverter.GetBytes(float.Parse(textToConvert,CultureInfo.InvariantCulture));
+						}
+						else
+						{
+							valueBytes = BitConverter.GetBytes(double.Parse(textToConvert,CultureInfo.InvariantCulture));
+						}
                         if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
-                            Array.Reverse(bytes);
-                        resultBox.Text = BitConverter.ToString(bytes).Replace("-"," ");
+							Array.Reverse(valueBytes);
+						resultBox.Text = BitConverter.ToString(valueBytes).Replace("-"," ");
                     }
             }
             catch (Exception ex)
@@ -48,6 +67,14 @@ namespace HexToFloat
         {
             Count();
         }
+
+		public double ByteArrayToDouble(byte[] source)
+		{
+			if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
+				Array.Reverse(source);
+
+			return BitConverter.ToDouble(source, 0);
+		}
 
         public float ByteArrayToFloat(byte[] source)
         {
