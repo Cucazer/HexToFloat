@@ -23,38 +23,42 @@ namespace HexToFloat
 
         }
 
-		void Count()
+        void Count()
         {
             try
             {
                 resultBox.Text = "";
                 if (hexToFloat.Checked)
-				{
-					if (singlePrecision.Checked) 
-					{
-						resultBox.Text = ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-					}
-					else 
-					{
-						resultBox.Text = ByteArrayToDouble(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-					}
-				}
-				else
+                {
+                    if (singlePrecision.Checked) 
+                    {
+                        resultBox.Text = ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
+                    }
+                    else 
+                    {
+                        resultBox.Text = ByteArrayToDouble(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
+                    }
+                }
+                else
                     if (floatToHex.Checked)
                     {
-						var textToConvert = sourceBox.Text.Replace(",",".");//.Replace(" ", "").Replace(".", ",").Replace("-", " ");
-						byte[] valueBytes;
-						if (singlePrecision.Checked) 
-						{
-							valueBytes = BitConverter.GetBytes(float.Parse(textToConvert,CultureInfo.InvariantCulture));
-						}
-						else
-						{
-							valueBytes = BitConverter.GetBytes(double.Parse(textToConvert,CultureInfo.InvariantCulture));
-						}
+                        var textToConvert = sourceBox.Text.Replace(",",".");//.Replace(" ", "").Replace(".", ",").Replace("-", " ");
+                        byte[] valueBytes;
+                        if (singlePrecision.Checked) 
+                        {
+                            valueBytes = BitConverter.GetBytes(float.Parse(textToConvert,CultureInfo.InvariantCulture));
+                        }
+                        else
+                        {
+                            valueBytes = BitConverter.GetBytes(double.Parse(textToConvert,CultureInfo.InvariantCulture));
+                        }
                         if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
-							Array.Reverse(valueBytes);
-						resultBox.Text = BitConverter.ToString(valueBytes).Replace("-"," ");
+                            Array.Reverse(valueBytes);
+                        resultBox.Text = BitConverter.ToString(valueBytes).Replace("-"," ");
+                        /*if (!this.checkBoxSpaces.Checked)
+                        {
+                            this.resultBox.Text = this.resultBox.Text.Replace(" ", "");
+                        }*/
                     }
             }
             catch (Exception ex)
@@ -68,13 +72,13 @@ namespace HexToFloat
             Count();
         }
 
-		public double ByteArrayToDouble(byte[] source)
-		{
-			if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
-				Array.Reverse(source);
+        public double ByteArrayToDouble(byte[] source)
+        {
+            if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
+                Array.Reverse(source);
 
-			return BitConverter.ToDouble(source, 0);
-		}
+            return BitConverter.ToDouble(source, 0);
+        }
 
         public float ByteArrayToFloat(byte[] source)
         {
@@ -84,9 +88,14 @@ namespace HexToFloat
             return BitConverter.ToSingle(source, 0);
         }
 
-        public static byte[] StringToByteArrayFastest(string hex)
+        public byte[] StringToByteArrayFastest(string hex)
         {
-            if (hex.Length % 2 == 1)
+            if (this.singlePrecision.Checked)
+            {
+                return BitConverter.GetBytes(Convert.ToInt32(hex.Replace(" ", ""), 16));
+            }
+            return BitConverter.GetBytes(Convert.ToInt64(hex.Replace(" ", ""), 16));
+            /*if (hex.Length % 2 == 1)
                 throw new Exception("The binary key cannot have an odd number of digits");
 
             byte[] arr = new byte[hex.Length >> 1];
@@ -95,8 +104,8 @@ namespace HexToFloat
             {
                 arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
             }
-
-            return arr;
+            
+            return arr;*/
         }
 
         public static int GetHexVal(char hex)
