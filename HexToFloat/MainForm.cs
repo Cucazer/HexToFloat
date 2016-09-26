@@ -55,10 +55,10 @@ namespace HexToFloat
                         if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
                             Array.Reverse(valueBytes);
                         resultBox.Text = BitConverter.ToString(valueBytes).Replace("-"," ");
-                        /*if (!this.checkBoxSpaces.Checked)
+                        if (!checkBoxSpaces.Checked)
                         {
-                            this.resultBox.Text = this.resultBox.Text.Replace(" ", "");
-                        }*/
+                            resultBox.Text = resultBox.Text.Replace(" ", "");
+                        }
                     }
             }
             catch (Exception ex)
@@ -90,11 +90,20 @@ namespace HexToFloat
 
         public byte[] StringToByteArrayFastest(string hex)
         {
+			byte[] numberBytes;
             if (this.singlePrecision.Checked)
             {
-                return BitConverter.GetBytes(Convert.ToInt32(hex.Replace(" ", ""), 16));
+				numberBytes = BitConverter.GetBytes(Convert.ToInt32(hex.Replace(" ", ""), 16));
             }
-            return BitConverter.GetBytes(Convert.ToInt64(hex.Replace(" ", ""), 16));
+			else
+			{
+				numberBytes = BitConverter.GetBytes(Convert.ToInt64(hex.Replace(" ", ""), 16));
+			}
+			if (BitConverter.IsLittleEndian)
+			{
+				return numberBytes.Reverse().ToArray();
+			}
+			return numberBytes;
             /*if (hex.Length % 2 == 1)
                 throw new Exception("The binary key cannot have an odd number of digits");
 
