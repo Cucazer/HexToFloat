@@ -10,7 +10,8 @@
 
 namespace HexToFloat
 {
-    
+    using System;
+
     #region Windows Form Designer generated code
     public partial class MainForm
     {
@@ -78,6 +79,7 @@ namespace HexToFloat
             this.hexToFloat.Name = "hexToFloat";
             this.hexToFloat.Size = new System.Drawing.Size(88, 19);
             this.hexToFloat.TabIndex = 3;
+            this.hexToFloat.CheckedChanged += new System.EventHandler(HexToFloatOnCheckedChanged);
             // 
             // floatToHex
             // 
@@ -89,6 +91,7 @@ namespace HexToFloat
             this.floatToHex.Name = "floatToHex";
             this.floatToHex.Size = new System.Drawing.Size(88, 19);
             this.floatToHex.TabIndex = 4;
+            this.floatToHex.CheckedChanged += new System.EventHandler(FloatToHexOnCheckedChanged);
             // 
             // groupBox1
             // 
@@ -203,6 +206,7 @@ namespace HexToFloat
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
         }
+
         private System.Windows.Forms.TextBox resultBox;
         private System.Windows.Forms.Button buttonConvert;
         private System.Windows.Forms.TextBox sourceBox;
