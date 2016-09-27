@@ -90,20 +90,20 @@ namespace HexToFloat
 
         public byte[] StringToByteArrayFastest(string hex)
         {
-			byte[] numberBytes;
+            byte[] numberBytes;
             if (this.singlePrecision.Checked)
             {
-				numberBytes = BitConverter.GetBytes(Convert.ToInt32(hex.Replace(" ", ""), 16));
+                numberBytes = BitConverter.GetBytes(Convert.ToInt32(hex.Replace(" ", ""), 16));
             }
-			else
-			{
-				numberBytes = BitConverter.GetBytes(Convert.ToInt64(hex.Replace(" ", ""), 16));
-			}
-			if (BitConverter.IsLittleEndian)
-			{
-				return numberBytes.Reverse().ToArray();
-			}
-			return numberBytes;
+            else
+            {
+                numberBytes = BitConverter.GetBytes(Convert.ToInt64(hex.Replace(" ", ""), 16));
+            }
+            if (BitConverter.IsLittleEndian)
+            {
+                return numberBytes.Reverse().ToArray();
+            }
+            return numberBytes;
             /*if (hex.Length % 2 == 1)
                 throw new Exception("The binary key cannot have an odd number of digits");
 
@@ -126,6 +126,24 @@ namespace HexToFloat
             //return val - (val < 58 ? 48 : 87);
             //Or the two combined, but a bit slower:
             //return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
+        }
+
+        private void FloatToHexOnCheckedChanged(object sender, EventArgs eventArgs)
+        {
+            if (this.floatToHex.Checked)
+            {
+                this.checkBoxSpaces.Enabled = true;
+                //this.groupBox3.Enabled = true;
+            }
+        }
+
+        private void HexToFloatOnCheckedChanged(object sender, EventArgs eventArgs)
+        {
+            if (this.hexToFloat.Checked)
+            {
+                this.checkBoxSpaces.Enabled = false;
+                //this.groupBox3.Enabled = false;
+            }
         }
     }
 }
