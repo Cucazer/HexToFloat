@@ -30,36 +30,37 @@ namespace HexToFloat
                 resultBox.Text = "";
                 if (hexToFloat.Checked)
                 {
-                    if (singlePrecision.Checked) 
-                    {
-                        resultBox.Text = ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-                    }
+                    /*if (singlePrecision.Checked)
+                    {*/
+                    resultBox.Text = StringToByteArrayFastest(sourceBox.Text).ToString();
+                    //ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
+                    /*}
                     else 
                     {
                         resultBox.Text = ByteArrayToDouble(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-                    }
+                    }*/
                 }
-                else
-                    if (floatToHex.Checked)
+                else if (floatToHex.Checked)
+                {
+                    var textToConvert = sourceBox.Text.Replace(",", ".");
+                        //.Replace(" ", "").Replace(".", ",").Replace("-", " ");
+                    byte[] valueBytes;
+                    if (singlePrecision.Checked)
                     {
-                        var textToConvert = sourceBox.Text.Replace(",",".");//.Replace(" ", "").Replace(".", ",").Replace("-", " ");
-                        byte[] valueBytes;
-                        if (singlePrecision.Checked) 
-                        {
-                            valueBytes = BitConverter.GetBytes(float.Parse(textToConvert,CultureInfo.InvariantCulture));
-                        }
-                        else
-                        {
-                            valueBytes = BitConverter.GetBytes(double.Parse(textToConvert,CultureInfo.InvariantCulture));
-                        }
-                        if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
-                            Array.Reverse(valueBytes);
-                        resultBox.Text = BitConverter.ToString(valueBytes).Replace("-"," ");
-                        if (!checkBoxSpaces.Checked)
-                        {
-                            resultBox.Text = resultBox.Text.Replace(" ", "");
-                        }
+                        valueBytes = BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture));
                     }
+                    else
+                    {
+                        valueBytes = BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
+                    }
+                    if (bigEndianButton.Checked | !BitConverter.IsLittleEndian) Array.Reverse(valueBytes);
+                    resultBox.Text = BitConverter.ToString(valueBytes).Replace("-", " ");
+                    if (!checkBoxSpaces.Checked)
+                    {
+                        resultBox.Text = resultBox.Text.Replace(" ", "");
+                    }
+                    //TODO: copy to clipboard
+                }
             }
             catch (Exception ex)
             {
@@ -88,16 +89,37 @@ namespace HexToFloat
             return BitConverter.ToSingle(source, 0);
         }
 
-        public byte[] StringToByteArrayFastest(string hex)
+        public object StringToByteArrayFastest(string hex)
         {
-            byte[] numberBytes;
-            if (this.singlePrecision.Checked)
+            var numberToParse = hex.Replace(" ", "");
+            if (numberToParse.StartsWith("0x"))
             {
-                numberBytes = BitConverter.GetBytes(Convert.ToInt32(hex.Replace(" ", ""), 16));
+                numberToParse = numberToParse.Remove(0, 2);
             }
-            else
+
+            byte[] numberBytes;
+            switch (numberToParse.Length)
             {
-                numberBytes = BitConverter.GetBytes(Convert.ToInt64(hex.Replace(" ", ""), 16));
+                case 8:
+                    numberBytes = BitConverter.GetBytes(Convert.ToInt32(numberToParse, 16));
+                    if ((BitConverter.IsLittleEndian && littleEndianButton.Checked)
+                        || (!BitConverter.IsLittleEndian && bigEndianButton.Checked))
+                    {
+                        Array.Reverse(numberBytes);
+                    }
+                    return BitConverter.ToSingle(numberBytes, 0);
+                    //break;
+                case 16:
+                    numberBytes = BitConverter.GetBytes(Convert.ToInt64(numberToParse, 16));
+                    if ((BitConverter.IsLittleEndian && littleEndianButton.Checked)
+                        || (!BitConverter.IsLittleEndian && bigEndianButton.Checked))
+                    {
+                        Array.Reverse(numberBytes);
+                    }
+                    return BitConverter.ToDouble(numberBytes, 0);
+                    //break;
+                default:
+                    throw new Exception("Incorrect digit count. Must be 8 for single precision or 16 for double precision.");
             }
             if (BitConverter.IsLittleEndian)
             {
@@ -133,7 +155,7 @@ namespace HexToFloat
             if (this.floatToHex.Checked)
             {
                 this.checkBoxSpaces.Enabled = true;
-                //this.groupBox3.Enabled = true;
+                this.groupBox3.Enabled = true;
             }
         }
 
@@ -142,7 +164,7 @@ namespace HexToFloat
             if (this.hexToFloat.Checked)
             {
                 this.checkBoxSpaces.Enabled = false;
-                //this.groupBox3.Enabled = false;
+                this.groupBox3.Enabled = false;
             }
         }
     }

@@ -149,6 +149,7 @@ namespace HexToFloat
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(80, 72);
             this.groupBox3.TabIndex = 7;
+            this.groupBox3.Enabled = false;
             // 
             // singlePrecision
             // 
