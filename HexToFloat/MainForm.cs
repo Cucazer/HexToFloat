@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Globalization;
 
@@ -30,30 +23,28 @@ namespace HexToFloat
                 resultBox.Text = "";
                 if (hexToFloat.Checked)
                 {
-                    /*if (singlePrecision.Checked)
-                    {*/
-                    resultBox.Text = StringToByteArrayFastest(sourceBox.Text).ToString();
-                    //ByteArrayToFloat(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-                    /*}
-                    else 
-                    {
-                        resultBox.Text = ByteArrayToDouble(StringToByteArrayFastest(sourceBox.Text.Replace(" ", ""))).ToString();
-                    }*/
+                    resultBox.Text = this.StringToFloatingPointNumber(sourceBox.Text).ToString();
                 }
                 else if (floatToHex.Checked)
                 {
-                    var textToConvert = sourceBox.Text.Replace(",", ".");
-                        //.Replace(" ", "").Replace(".", ",").Replace("-", " ");
-                    byte[] valueBytes;
-                    if (singlePrecision.Checked)
+                    var textToConvert =
+                        sourceBox.Text
+                            // treat comma and dot both as decimal separators
+                            .Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)
+                            .Replace(".", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)
+                            // allow space as digit group separator
+                            .Replace(" ", "");
+
+                    var valueBytes = BitConverter.GetBytes(
+                        this.singlePrecision.Checked
+                            ? float.Parse(textToConvert, CultureInfo.InvariantCulture)
+                            : double.Parse(textToConvert, CultureInfo.InvariantCulture));
+                    // reverse byte array if requested byte order is different from what BitConverter uses for getting bytes
+                    if (littleEndianButton.Checked != BitConverter.IsLittleEndian)
                     {
-                        valueBytes = BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture));
+                        Array.Reverse(valueBytes);
                     }
-                    else
-                    {
-                        valueBytes = BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
-                    }
-                    if (bigEndianButton.Checked | !BitConverter.IsLittleEndian) Array.Reverse(valueBytes);
+                    // BitConverter uses hyphens to separate single bytes -> replace them with spaces and delete spaces if not needed
                     resultBox.Text = BitConverter.ToString(valueBytes).Replace("-", " ");
                     if (!checkBoxSpaces.Checked)
                     {
@@ -73,27 +64,12 @@ namespace HexToFloat
             Count();
         }
 
-        public double ByteArrayToDouble(byte[] source)
-        {
-            if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
-                Array.Reverse(source);
-
-            return BitConverter.ToDouble(source, 0);
-        }
-
-        public float ByteArrayToFloat(byte[] source)
-        {
-            if (bigEndianButton.Checked | !BitConverter.IsLittleEndian)
-                Array.Reverse(source);
-            
-            return BitConverter.ToSingle(source, 0);
-        }
-
-        public object StringToByteArrayFastest(string hex)
+        private object StringToFloatingPointNumber(string hex)
         {
             var numberToParse = hex.Replace(" ", "");
             if (numberToParse.StartsWith("0x"))
             {
+                // allow 0x only at the beginning, will cause an error if found somewhere else
                 numberToParse = numberToParse.Remove(0, 2);
             }
 
@@ -102,52 +78,25 @@ namespace HexToFloat
             {
                 case 8:
                     numberBytes = BitConverter.GetBytes(Convert.ToInt32(numberToParse, 16));
-                    if ((BitConverter.IsLittleEndian && littleEndianButton.Checked)
-                        || (!BitConverter.IsLittleEndian && bigEndianButton.Checked))
+                    // If BitConverter is little endian, then after conversion from hexadecimal to decimal system the first (MSB)
+                    // byte described goes to the last position in byte array. Therefore we need to reverse an array if the
+                    // hexadecimal value described in string corresponds to the current system endianness - restore actually
+                    // described byte order in the hex string.
+                    if (BitConverter.IsLittleEndian == littleEndianButton.Checked)
                     {
                         Array.Reverse(numberBytes);
                     }
                     return BitConverter.ToSingle(numberBytes, 0);
-                    //break;
                 case 16:
                     numberBytes = BitConverter.GetBytes(Convert.ToInt64(numberToParse, 16));
-                    if ((BitConverter.IsLittleEndian && littleEndianButton.Checked)
-                        || (!BitConverter.IsLittleEndian && bigEndianButton.Checked))
+                    if (BitConverter.IsLittleEndian == littleEndianButton.Checked)
                     {
                         Array.Reverse(numberBytes);
                     }
                     return BitConverter.ToDouble(numberBytes, 0);
-                    //break;
                 default:
                     throw new Exception("Incorrect digit count. Must be 8 for single precision or 16 for double precision.");
             }
-            if (BitConverter.IsLittleEndian)
-            {
-                return numberBytes.Reverse().ToArray();
-            }
-            return numberBytes;
-            /*if (hex.Length % 2 == 1)
-                throw new Exception("The binary key cannot have an odd number of digits");
-
-            byte[] arr = new byte[hex.Length >> 1];
-
-            for (int i = 0; i < hex.Length >> 1; ++i)
-            {
-                arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + (GetHexVal(hex[(i << 1) + 1])));
-            }
-            
-            return arr;*/
-        }
-
-        public static int GetHexVal(char hex)
-        {
-            int val = (int)hex;
-            //For uppercase A-F letters:
-            return val - (val < 58 ? 48 : 55);
-            //For lowercase a-f letters:
-            //return val - (val < 58 ? 48 : 87);
-            //Or the two combined, but a bit slower:
-            //return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
         }
 
         private void FloatToHexOnCheckedChanged(object sender, EventArgs eventArgs)
