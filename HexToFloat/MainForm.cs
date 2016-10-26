@@ -35,15 +35,9 @@ namespace HexToFloat
                             // allow space as digit group separator
                             .Replace(" ", "");
 
-                    byte[] valueBytes;
-					if (this.singlePrecision.Checked) 
-					{
-						valueBytes = BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture));
-					}
-					else 
-					{
-						valueBytes = BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
-					}
+                    var valueBytes = this.singlePrecision.Checked
+                                         ? BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture))
+                                         : BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
                     // reverse byte array if requested byte order is different from what BitConverter uses for getting bytes
                     if (littleEndianButton.Checked != BitConverter.IsLittleEndian)
                     {
