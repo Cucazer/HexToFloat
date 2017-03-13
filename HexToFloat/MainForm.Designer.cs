@@ -17,195 +17,208 @@ namespace HexToFloat
     {
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.resultBox = new System.Windows.Forms.TextBox();
             this.buttonConvert = new System.Windows.Forms.Button();
             this.sourceBox = new System.Windows.Forms.TextBox();
             this.hexToFloat = new System.Windows.Forms.RadioButton();
             this.floatToHex = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBoxConversion = new System.Windows.Forms.GroupBox();
+            this.groupBoxEndianness = new System.Windows.Forms.GroupBox();
             this.littleEndianButton = new System.Windows.Forms.RadioButton();
             this.bigEndianButton = new System.Windows.Forms.RadioButton();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.singlePrecision = new System.Windows.Forms.RadioButton();
+            this.groupBoxPrecision = new System.Windows.Forms.GroupBox();
             this.doublePrecision = new System.Windows.Forms.RadioButton();
+            this.singlePrecision = new System.Windows.Forms.RadioButton();
             this.checkBoxSpaces = new System.Windows.Forms.CheckBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.checkBoxClipboard = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.groupBoxConversion.SuspendLayout();
+            this.groupBoxEndianness.SuspendLayout();
+            this.groupBoxPrecision.SuspendLayout();
+            this.SuspendLayout();
             // 
             // resultBox
             // 
-            this.resultBox.Text = "";
-            this.resultBox.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.resultBox.ReadOnly = true;
             this.resultBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.resultBox.ForeColor = System.Drawing.SystemColors.WindowText;
             this.resultBox.Location = new System.Drawing.Point(12, 118);
             this.resultBox.Name = "resultBox";
-            this.resultBox.Size = new System.Drawing.Size(372, 26);
+            this.resultBox.ReadOnly = true;
+            this.resultBox.Size = new System.Drawing.Size(372, 20);
             this.resultBox.TabIndex = 1;
             // 
             // buttonConvert
             // 
-            this.buttonConvert.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.buttonConvert.Text = "Convert";
-            this.buttonConvert.UseVisualStyleBackColor = true;
             this.buttonConvert.Location = new System.Drawing.Point(312, 88);
             this.buttonConvert.Name = "buttonConvert";
             this.buttonConvert.Size = new System.Drawing.Size(75, 27);
             this.buttonConvert.TabIndex = 2;
-            this.buttonConvert.Click += new System.EventHandler(this.button1_Click);
+            this.buttonConvert.Text = "Convert";
+            this.buttonConvert.UseVisualStyleBackColor = true;
+            this.buttonConvert.Click += new System.EventHandler(this.ButtonConvertClick);
             // 
             // sourceBox
             // 
-            this.sourceBox.Text = "";
             this.sourceBox.BackColor = System.Drawing.SystemColors.Window;
-            this.sourceBox.ForeColor = System.Drawing.SystemColors.WindowText;
             this.sourceBox.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.sourceBox.ForeColor = System.Drawing.SystemColors.WindowText;
             this.sourceBox.Location = new System.Drawing.Point(12, 12);
             this.sourceBox.Name = "sourceBox";
-            this.sourceBox.Size = new System.Drawing.Size(372, 26);
+            this.sourceBox.Size = new System.Drawing.Size(372, 20);
             this.sourceBox.TabIndex = 0;
             // 
             // hexToFloat
             // 
-            this.hexToFloat.Checked = true;
-            this.hexToFloat.TabStop = true;
             this.hexToFloat.AutoSize = true;
-            this.hexToFloat.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.hexToFloat.Text = "Hex -> Float";
-            this.hexToFloat.UseVisualStyleBackColor = true;
+            this.hexToFloat.Checked = true;
             this.hexToFloat.Location = new System.Drawing.Point(6, 20);
             this.hexToFloat.Name = "hexToFloat";
-            this.hexToFloat.Size = new System.Drawing.Size(88, 19);
+            this.hexToFloat.Size = new System.Drawing.Size(82, 17);
             this.hexToFloat.TabIndex = 3;
-            this.hexToFloat.CheckedChanged += new System.EventHandler(HexToFloatOnCheckedChanged);
+            this.hexToFloat.TabStop = true;
+            this.hexToFloat.Text = "Hex -> Float";
+            this.hexToFloat.UseVisualStyleBackColor = true;
+            this.hexToFloat.CheckedChanged += new System.EventHandler(this.HexToFloatOnCheckedChanged);
             // 
             // floatToHex
             // 
             this.floatToHex.AutoSize = true;
-            this.floatToHex.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.floatToHex.Text = "Float -> Hex";
-            this.floatToHex.UseVisualStyleBackColor = true;
             this.floatToHex.Location = new System.Drawing.Point(6, 45);
             this.floatToHex.Name = "floatToHex";
-            this.floatToHex.Size = new System.Drawing.Size(88, 19);
+            this.floatToHex.Size = new System.Drawing.Size(82, 17);
             this.floatToHex.TabIndex = 4;
-            this.floatToHex.CheckedChanged += new System.EventHandler(FloatToHexOnCheckedChanged);
+            this.floatToHex.Text = "Float -> Hex";
+            this.floatToHex.UseVisualStyleBackColor = true;
+            this.floatToHex.CheckedChanged += new System.EventHandler(this.FloatToHexOnCheckedChanged);
             // 
-            // groupBox1
+            // groupBoxConversion
             // 
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Conversion type";
-            this.groupBox1.Controls.Add(this.hexToFloat);
-            this.groupBox1.Controls.Add(this.floatToHex);
-            this.groupBox1.Location = new System.Drawing.Point(16, 43);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(99, 72);
-            this.groupBox1.TabIndex = 5;
+            this.groupBoxConversion.Controls.Add(this.hexToFloat);
+            this.groupBoxConversion.Controls.Add(this.floatToHex);
+            this.groupBoxConversion.Location = new System.Drawing.Point(16, 43);
+            this.groupBoxConversion.Name = "groupBoxConversion";
+            this.groupBoxConversion.Size = new System.Drawing.Size(99, 72);
+            this.groupBoxConversion.TabIndex = 5;
+            this.groupBoxConversion.TabStop = false;
+            this.groupBoxConversion.Text = "Conversion type";
             // 
-            // groupBox2
+            // groupBoxEndianness
             // 
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Endianness";
-            this.groupBox2.Controls.Add(this.littleEndianButton);
-            this.groupBox2.Controls.Add(this.bigEndianButton);
-            this.groupBox2.Location = new System.Drawing.Point(121, 43);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(99, 72);
-            this.groupBox2.TabIndex = 6;
+            this.groupBoxEndianness.Controls.Add(this.littleEndianButton);
+            this.groupBoxEndianness.Controls.Add(this.bigEndianButton);
+            this.groupBoxEndianness.Location = new System.Drawing.Point(121, 43);
+            this.groupBoxEndianness.Name = "groupBoxEndianness";
+            this.groupBoxEndianness.Size = new System.Drawing.Size(99, 72);
+            this.groupBoxEndianness.TabIndex = 6;
+            this.groupBoxEndianness.TabStop = false;
+            this.groupBoxEndianness.Text = "Endianness";
             // 
             // littleEndianButton
             // 
-            this.littleEndianButton.Checked = true;
-            this.littleEndianButton.TabStop = true;
             this.littleEndianButton.AutoSize = true;
-            this.littleEndianButton.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.littleEndianButton.Text = "Little Endian";
-            this.littleEndianButton.UseVisualStyleBackColor = true;
+            this.littleEndianButton.Checked = true;
             this.littleEndianButton.Location = new System.Drawing.Point(6, 20);
             this.littleEndianButton.Name = "littleEndianButton";
-            this.littleEndianButton.Size = new System.Drawing.Size(89, 19);
+            this.littleEndianButton.Size = new System.Drawing.Size(83, 17);
             this.littleEndianButton.TabIndex = 3;
+            this.littleEndianButton.TabStop = true;
+            this.littleEndianButton.Text = "Little Endian";
+            this.littleEndianButton.UseVisualStyleBackColor = true;
             // 
             // bigEndianButton
             // 
             this.bigEndianButton.AutoSize = true;
-            this.bigEndianButton.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.bigEndianButton.Text = "Big Endian";
-            this.bigEndianButton.UseVisualStyleBackColor = true;
             this.bigEndianButton.Location = new System.Drawing.Point(6, 45);
             this.bigEndianButton.Name = "bigEndianButton";
-            this.bigEndianButton.Size = new System.Drawing.Size(80, 19);
+            this.bigEndianButton.Size = new System.Drawing.Size(76, 17);
             this.bigEndianButton.TabIndex = 4;
+            this.bigEndianButton.Text = "Big Endian";
+            this.bigEndianButton.UseVisualStyleBackColor = true;
             // 
-            // groupBox3
+            // groupBoxPrecision
             // 
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Precision";
-            this.groupBox3.Controls.Add(this.doublePrecision);
-            this.groupBox3.Controls.Add(this.singlePrecision);
-            this.groupBox3.Location = new System.Drawing.Point(224, 43);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(80, 72);
-            this.groupBox3.TabIndex = 7;
-            this.groupBox3.Enabled = false;
+            this.groupBoxPrecision.Controls.Add(this.doublePrecision);
+            this.groupBoxPrecision.Controls.Add(this.singlePrecision);
+            this.groupBoxPrecision.Enabled = false;
+            this.groupBoxPrecision.Location = new System.Drawing.Point(224, 43);
+            this.groupBoxPrecision.Name = "groupBoxPrecision";
+            this.groupBoxPrecision.Size = new System.Drawing.Size(80, 72);
+            this.groupBoxPrecision.TabIndex = 7;
+            this.groupBoxPrecision.TabStop = false;
+            this.groupBoxPrecision.Text = "Precision";
+            // 
+            // doublePrecision
+            // 
+            this.doublePrecision.AutoSize = true;
+            this.doublePrecision.Checked = true;
+            this.doublePrecision.Location = new System.Drawing.Point(8, 43);
+            this.doublePrecision.Name = "doublePrecision";
+            this.doublePrecision.Size = new System.Drawing.Size(59, 17);
+            this.doublePrecision.TabIndex = 1;
+            this.doublePrecision.TabStop = true;
+            this.doublePrecision.Text = "Double";
+            this.doublePrecision.UseVisualStyleBackColor = true;
             // 
             // singlePrecision
             // 
             this.singlePrecision.AutoSize = true;
-            this.singlePrecision.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.singlePrecision.Text = "Single";
-            this.singlePrecision.UseVisualStyleBackColor = true;
             this.singlePrecision.Location = new System.Drawing.Point(8, 17);
             this.singlePrecision.Name = "singlePrecision";
-            this.singlePrecision.Size = new System.Drawing.Size(58, 19);
+            this.singlePrecision.Size = new System.Drawing.Size(54, 17);
             this.singlePrecision.TabIndex = 0;
-            // 
-            // doublePrecision
-            // 
-            this.doublePrecision.Checked = true;
-            this.doublePrecision.TabStop = true;
-            this.doublePrecision.AutoSize = true;
-            this.doublePrecision.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.doublePrecision.Text = "Double";
-            this.doublePrecision.UseVisualStyleBackColor = true;
-            this.doublePrecision.Location = new System.Drawing.Point(8, 43);
-            this.doublePrecision.Name = "doublePrecision";
-            this.doublePrecision.Size = new System.Drawing.Size(63, 19);
-            this.doublePrecision.TabIndex = 1;
+            this.singlePrecision.Text = "Single";
+            this.singlePrecision.UseVisualStyleBackColor = true;
             // 
             // checkBoxSpaces
             // 
             this.checkBoxSpaces.Checked = true;
             this.checkBoxSpaces.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSpaces.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.checkBoxSpaces.Text = "Spaces";
-            this.checkBoxSpaces.UseVisualStyleBackColor = true;
-            this.checkBoxSpaces.Location = new System.Drawing.Point(312, 48);
+            this.checkBoxSpaces.Enabled = false;
+            this.checkBoxSpaces.Location = new System.Drawing.Point(312, 40);
             this.checkBoxSpaces.Name = "checkBoxSpaces";
             this.checkBoxSpaces.Size = new System.Drawing.Size(72, 24);
             this.checkBoxSpaces.TabIndex = 8;
+            this.checkBoxSpaces.Text = "Spaces";
+            this.toolTip1.SetToolTip(this.checkBoxSpaces, "Use spaces to separate bytes\r\nin hexadecimal representation");
+            this.checkBoxSpaces.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxClipboard
+            // 
+            this.checkBoxClipboard.AutoSize = true;
+            this.checkBoxClipboard.Location = new System.Drawing.Point(312, 64);
+            this.checkBoxClipboard.Name = "checkBoxClipboard";
+            this.checkBoxClipboard.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxClipboard.TabIndex = 9;
+            this.checkBoxClipboard.Text = "To clipboard";
+            this.toolTip1.SetToolTip(this.checkBoxClipboard, "Copy conversion result to clipboard");
+            this.checkBoxClipboard.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AcceptButton = this.buttonConvert;
             this.ClientSize = new System.Drawing.Size(395, 155);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Text = "Hex to Float and vice versa";
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.checkBoxClipboard);
+            this.Controls.Add(this.groupBoxPrecision);
+            this.Controls.Add(this.groupBoxEndianness);
+            this.Controls.Add(this.groupBoxConversion);
             this.Controls.Add(this.sourceBox);
             this.Controls.Add(this.buttonConvert);
             this.Controls.Add(this.resultBox);
             this.Controls.Add(this.checkBoxSpaces);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
+            this.Text = "Hex to Float and vice versa";
+            this.groupBoxConversion.ResumeLayout(false);
+            this.groupBoxConversion.PerformLayout();
+            this.groupBoxEndianness.ResumeLayout(false);
+            this.groupBoxEndianness.PerformLayout();
+            this.groupBoxPrecision.ResumeLayout(false);
+            this.groupBoxPrecision.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         private System.Windows.Forms.TextBox resultBox;
@@ -213,14 +226,17 @@ namespace HexToFloat
         private System.Windows.Forms.TextBox sourceBox;
         private System.Windows.Forms.RadioButton hexToFloat;
         private System.Windows.Forms.RadioButton floatToHex;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBoxConversion;
+        private System.Windows.Forms.GroupBox groupBoxEndianness;
         private System.Windows.Forms.RadioButton littleEndianButton;
         private System.Windows.Forms.RadioButton bigEndianButton;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBoxPrecision;
         private System.Windows.Forms.RadioButton singlePrecision;
         private System.Windows.Forms.RadioButton doublePrecision;
         private System.Windows.Forms.CheckBox checkBoxSpaces;
+        private System.Windows.Forms.CheckBox checkBoxClipboard;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.ComponentModel.IContainer components;
     }
     #endregion
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Globalization;
+// ReSharper disable ArrangeThisQualifier
 
 namespace HexToFloat
 {
@@ -11,59 +12,46 @@ namespace HexToFloat
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private string ConvertNumber()
         {
+            if (hexToFloat.Checked)
+            {
+                return HexStringToFloatingPointNumber(sourceBox.Text, this.littleEndianButton.Checked).ToString();
+            }
 
+            if (floatToHex.Checked)
+            {
+                return FloatingPointNumberToHexString(
+                    this.sourceBox.Text,
+                    this.singlePrecision.Checked,
+                    this.littleEndianButton.Checked,
+                    this.checkBoxSpaces.Checked);
+            }
+
+            return "";
         }
 
-        void Count()
+        private void ButtonConvertClick(object sender, EventArgs e)
         {
+            resultBox.Text = "";
+
             try
             {
-                resultBox.Text = "";
-                if (hexToFloat.Checked)
-                {
-                    resultBox.Text = this.StringToFloatingPointNumber(sourceBox.Text).ToString();
-                }
-                else if (floatToHex.Checked)
-                {
-                    var textToConvert =
-                        sourceBox.Text
-                            // treat comma and dot both as decimal separators
-                            .Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)
-                            .Replace(".", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)
-                            // allow space as digit group separator
-                            .Replace(" ", "");
-
-                    var valueBytes = this.singlePrecision.Checked
-                                         ? BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture))
-                                         : BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
-                    // reverse byte array if requested byte order is different from what BitConverter uses for getting bytes
-                    if (littleEndianButton.Checked != BitConverter.IsLittleEndian)
-                    {
-                        Array.Reverse(valueBytes);
-                    }
-                    // BitConverter uses hyphens to separate single bytes -> replace them with spaces and delete spaces if not needed
-                    resultBox.Text = BitConverter.ToString(valueBytes).Replace("-", " ");
-                    if (!checkBoxSpaces.Checked)
-                    {
-                        resultBox.Text = resultBox.Text.Replace(" ", "");
-                    }
-                    //TODO: copy to clipboard
-                }
+                this.resultBox.Text = this.ConvertNumber();   
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                return;
+            }
+
+            if (this.checkBoxClipboard.Checked)
+            {
+                Clipboard.SetText(this.resultBox.Text);
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Count();
-        }
-
-        private object StringToFloatingPointNumber(string hex)
+        private static object HexStringToFloatingPointNumber(string hex, bool isLittleEndian)
         {
             var numberToParse = hex.Replace(" ", "");
             if (numberToParse.StartsWith("0x"))
@@ -81,14 +69,14 @@ namespace HexToFloat
                     // byte described goes to the last position in byte array. Therefore we need to reverse an array if the
                     // hexadecimal value described in string corresponds to the current system endianness - restore actually
                     // described byte order in the hex string.
-                    if (BitConverter.IsLittleEndian == littleEndianButton.Checked)
+                    if (BitConverter.IsLittleEndian == isLittleEndian)
                     {
                         Array.Reverse(numberBytes);
                     }
                     return BitConverter.ToSingle(numberBytes, 0);
                 case 16:
                     numberBytes = BitConverter.GetBytes(Convert.ToInt64(numberToParse, 16));
-                    if (BitConverter.IsLittleEndian == littleEndianButton.Checked)
+                    if (BitConverter.IsLittleEndian == isLittleEndian)
                     {
                         Array.Reverse(numberBytes);
                     }
@@ -98,12 +86,36 @@ namespace HexToFloat
             }
         }
 
+        private static string FloatingPointNumberToHexString(string number, bool isSinglePrecision, bool useLittleEndian, bool useSpaces)
+        {
+            var textToConvert = number
+                // treat comma and dot both as decimal separators
+                .Replace(",", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)
+                .Replace(".", CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator)
+                // allow space as digit group separator
+                .Replace(" ", "");
+
+            var valueBytes = isSinglePrecision
+                                 ? BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture))
+                                 : BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
+
+            // reverse byte array if requested byte order is different from what BitConverter uses for getting bytes
+            if (useLittleEndian != BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(valueBytes);
+            }
+
+            // BitConverter uses hyphens to separate single bytes -> replace them with spaces and delete spaces if not needed
+            var result = BitConverter.ToString(valueBytes).Replace("-", " ");
+            return useSpaces ? result : result.Replace(" ", "");
+        }
+
         private void FloatToHexOnCheckedChanged(object sender, EventArgs eventArgs)
         {
             if (this.floatToHex.Checked)
             {
                 this.checkBoxSpaces.Enabled = true;
-                this.groupBox3.Enabled = true;
+                this.groupBoxPrecision.Enabled = true;
             }
         }
 
@@ -112,7 +124,7 @@ namespace HexToFloat
             if (this.hexToFloat.Checked)
             {
                 this.checkBoxSpaces.Enabled = false;
-                this.groupBox3.Enabled = false;
+                this.groupBoxPrecision.Enabled = false;
             }
         }
     }
