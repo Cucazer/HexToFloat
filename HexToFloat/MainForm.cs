@@ -33,6 +33,11 @@ namespace HexToFloat
 
         private void ButtonConvertClick(object sender, EventArgs e)
         {
+            if (this.sourceBox.Text.Length == 0)
+            {
+                return;
+            }
+
             resultBox.Text = "";
 
             try
@@ -82,11 +87,11 @@ namespace HexToFloat
                     }
                     return BitConverter.ToDouble(numberBytes, 0);
                 default:
-                    throw new Exception("Incorrect digit count. Must be 8 for single precision or 16 for double precision.");
+                    throw new Exception($"Incorrect digit count ({numberToParse.Length}). Must be 8 for single precision or 16 for double precision.");
             }
         }
 
-        private static string FloatingPointNumberToHexString(string number, bool isSinglePrecision, bool useLittleEndian, bool useSpaces)
+        private static string FloatingPointNumberToHexString(string number, bool useSinglePrecision, bool useLittleEndian, bool useSpaces)
         {
             var textToConvert = number
                 // treat comma and dot both as decimal separators
@@ -95,7 +100,7 @@ namespace HexToFloat
                 // allow space as digit group separator
                 .Replace(" ", "");
 
-            var valueBytes = isSinglePrecision
+            var valueBytes = useSinglePrecision
                                  ? BitConverter.GetBytes(float.Parse(textToConvert, CultureInfo.InvariantCulture))
                                  : BitConverter.GetBytes(double.Parse(textToConvert, CultureInfo.InvariantCulture));
 
@@ -125,6 +130,15 @@ namespace HexToFloat
             {
                 this.checkBoxSpaces.Enabled = false;
                 this.groupBoxPrecision.Enabled = false;
+            }
+        }
+
+        private void MainFormKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.sourceBox.Clear();
+                this.sourceBox.Focus();
             }
         }
     }
