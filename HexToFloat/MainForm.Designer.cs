@@ -67,6 +67,7 @@ namespace HexToFloat
             this.sourceBox.Name = "sourceBox";
             this.sourceBox.Size = new System.Drawing.Size(372, 20);
             this.sourceBox.TabIndex = 0;
+            this.sourceBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainFormKeyDown);
             // 
             // hexToFloat
             // 
@@ -207,9 +208,11 @@ namespace HexToFloat
             this.Controls.Add(this.resultBox);
             this.Controls.Add(this.checkBoxSpaces);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Hex to Float and vice versa";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainFormKeyDown);
             this.groupBoxConversion.ResumeLayout(false);
             this.groupBoxConversion.PerformLayout();
             this.groupBoxEndianness.ResumeLayout(false);
