@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Globalization;
 // ReSharper disable ArrangeThisQualifier
@@ -87,7 +88,26 @@ namespace HexToFloat
                     }
                     return BitConverter.ToDouble(numberBytes, 0);
                 default:
-                    throw new Exception($"Incorrect digit count ({numberToParse.Length}). Must be 8 for single precision or 16 for double precision.");
+                    if (numberToParse.Length % 16 == 0)
+                    {
+                        var numberCount = numberToParse.Length / 16;
+                        List<double> doubles = new List<double>();
+                        for (int i = 0; i < numberCount; i++)
+                        {
+                            numberBytes = BitConverter.GetBytes(Convert.ToInt64(numberToParse.Substring(16 * i, 16), 16));
+                            if (BitConverter.IsLittleEndian == isLittleEndian)
+                            {
+                                Array.Reverse(numberBytes);
+                            }
+                            doubles.Add(BitConverter.ToDouble(numberBytes, 0));
+                        }
+
+                        return string.Join(" ", doubles);
+                    }
+                    else
+                    {
+                        throw new Exception($"Incorrect digit count ({numberToParse.Length}). Must be 8 for single precision or 16 for double precision.");
+                    }
             }
         }
 
